@@ -1,0 +1,23 @@
+FROM node:18-alpine
+
+# Create app directory
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm install --silent
+
+# Copy the rest of the app (will be overridden by a mounted volume in dev)
+COPY . .
+
+# Expose dev server port
+EXPOSE 3000
+
+# Recommended: when running with a host mount, map a volume for node_modules
+# to avoid overwriting the container's installed deps.
+
+# Use polling for file watchers on some Windows Docker setups
+ENV CHOKIDAR_USEPOLLING=true
+
+# Start the dev server (craco start as defined in package.json)
+CMD ["npm", "start"]
